@@ -1,0 +1,206 @@
+<video autoplay loop muted playsinline id="bg-video">
+  <source src="sorna.mp4" type="video/mp4">
+</video>
+<style>
+  #bg-video {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.6;
+  }
+  body {
+    background: transparent !important;
+  }
+  .crush-hearts {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .crush-heart {
+    position: absolute;
+    font-size: 38px;
+    opacity: 0.7;
+    animation: floatUp 7s linear infinite;
+    pointer-events: none;
+    will-change: transform;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(1);}
+    100% { transform: translateY(-10vh) scale(1.2);}
+  }
+  #crush-main {
+    position: fixed;
+    left: 50%;
+    top: 54%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    text-align: center;
+  }
+  #crush-love {
+    font-size: 120px;
+    cursor: pointer;
+    transition: transform 0.4s;
+    filter: drop-shadow(0 0 20px #ff6f91);
+    user-select: none;
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1);}
+    50% { transform: scale(1.08);}
+    100% { transform: scale(1);}
+  }
+  #crush-caption {
+    font-size: 28px;
+    color: #d72660;
+    margin-top: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    animation: fadeIn 1.2s;
+    transition: opacity 0.6s;
+    opacity: 1;
+  }
+  .caption-fade {
+    opacity: 0 !important;
+  }
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  #crush-result {
+    font-size: 38px;
+    color: #d72660;
+    margin-top: 20px;
+    font-weight: bold;
+    display: none;
+    letter-spacing: 2px;
+    opacity: 0;
+    transition: opacity 0.8s;
+  }
+  .result-show {
+    display: block !important;
+    animation: fadeIn 1.2s;
+    opacity: 1 !important;
+  }
+  #crush-poem {
+    margin-top: 24px;
+    font-size: 22px;
+    color: #6a0572;
+    background: rgba(255,255,255,0.8);
+    border-radius: 16px;
+    padding: 18px 28px;
+    max-width: 420px;
+    display: none;
+    box-shadow: 0 4px 24px rgba(106,5,114,0.13);
+    animation: fadeIn 2s;
+    min-height: 70px;
+  }
+  #developer-credit {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    color: #fff;
+    background: rgba(215,38,96,0.65);
+    padding: 8px 22px;
+    border-radius: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 12px rgba(215,38,96,0.13);
+    z-index: 99;
+    text-shadow: 0 2px 8px #6a0572;
+  }
+</style>
+<div class="crush-hearts">
+  <span class="crush-heart" style="left:10%; animation-delay:0s;">❤️</span>
+  <span class="crush-heart" style="left:25%; animation-delay:1s;">💖</span>
+  <span class="crush-heart" style="left:40%; animation-delay:0.5s;">💕</span>
+  <span class="crush-heart" style="left:60%; animation-delay:1.2s;">💗</span>
+  <span class="crush-heart" style="left:80%; animation-delay:0.8s;">💘</span>
+  <span class="crush-heart" style="left:90%; animation-delay:1.5s;">💞</span>
+  <span class="crush-heart" style="left:15%; animation-delay:2s;">💝</span>
+  <span class="crush-heart" style="left:70%; animation-delay:2.5s;">💓</span>
+  <span class="crush-heart" style="left:50%; animation-delay:3s;">💟</span>
+</div>
+<div id="crush-main">
+  <span id="crush-love">❤️</span>
+  <div id="crush-caption">Click Me</div>
+  <div id="crush-result">SORNA REALLY LOVE YOU</div>
+  <div id="crush-poem"></div>
+</div>
+<div id="developer-credit">
+  Developer: Ratan Majumder
+</div>
+<script>
+  const crushLove = document.getElementById('crush-love');
+  const crushCaption = document.getElementById('crush-caption');
+  const crushResult = document.getElementById('crush-result');
+  const crushPoem = document.getElementById('crush-poem');
+  let broken = false;
+
+  // Romantic captions for girls (will rotate)
+  const captions = [
+    "তুমি হাসলে যেন পৃথিবীটা সুন্দর হয়ে যায়।",
+    "তোমার চোখে হারিয়ে যেতে ইচ্ছে করে।",
+    "তোমার কথা মনে পড়লেই মনটা ভালো হয়ে যায়।",
+    "তুমি আমার জীবনের সবচেয়ে সুন্দর অনুভূতি।",
+    "তোমার জন্যই আমার সকালটা রঙিন।",
+    "তুমি আমার স্বপ্নের রাজকন্যা।",
+    "তোমার হাসি আমার পৃথিবী বদলে দেয়।",
+    "তুমি থাকলে সবকিছুই সহজ লাগে।",
+    "তোমার ভালোবাসা আমার সবচেয়ে বড় পাওয়া।"
+  ];
+
+  // Romantic poem/caption (will rotate)
+  const poems = [
+    "ভালোবাসা মানে শুধু দুজনের গল্প নয়,<br>হৃদয়ের গভীরে জমে থাকা অনুভূতির ছোঁয়া;<br>তুমি আর আমি—একসাথে, এক নতুন স্বপ্নে,<br>ভালোবাসার রঙে রাঙানো প্রতিটি মুহূর্তে।",
+    "তোমার নামের প্রতিটা অক্ষরে<br>লুকিয়ে আছে আমার ভালোবাসা,<br>তুমি ছাড়া এই মন যেন<br>শূন্যতায় ভরা এক পৃথিবী।",
+    "তুমি আমার জীবনের সবচেয়ে সুন্দর অধ্যায়,<br>তোমার হাসিতে হারিয়ে যায় সব দুঃখ,<br>তুমি পাশে থাকলে, ভালোবাসা যেন<br>অন্তহীন আনন্দের উৎস।",
+    "তোমার চোখে আমার স্বপ্নের ঠিকানা,<br>তোমার হাসিতে আমার জীবনের আলো,<br>তুমি ছাড়া ভালোবাসা অসম্পূর্ণ,<br>তুমি-ই আমার ভালোবাসার গল্প।"
+  ];
+
+  let captionIndex = 0;
+  let poemIndex = 0;
+
+  function animateCaptionChange() {
+    if (!broken) {
+      crushCaption.classList.add('caption-fade');
+      setTimeout(() => {
+        crushCaption.textContent = captions[captionIndex];
+        crushCaption.classList.remove('caption-fade');
+        captionIndex = (captionIndex + 1) % captions.length;
+      }, 600);
+    }
+  }
+  setInterval(animateCaptionChange, 2000);
+
+  function showNextPoem() {
+    if (broken) {
+      crushPoem.innerHTML = poems[poemIndex];
+      poemIndex = (poemIndex + 1) % poems.length;
+    }
+  }
+
+  function breakHeart() {
+    if (!broken) {
+      crushLove.innerHTML = '❤️❤️';
+      crushLove.style.transform = 'rotate(-15deg) scale(1.2)';
+      crushResult.classList.add('result-show'); // Animation for "SORNA REALLY LOVE YOU"
+      crushPoem.style.display = 'block';
+      crushCaption.style.display = 'none';
+      crushPoem.innerHTML = poems[poemIndex];
+      broken = true;
+      setInterval(showNextPoem, 5000);
+    }
+  }
+
+  crushLove.onclick = breakHeart;
+  crushCaption.onclick = breakHeart;
+  animateCaptionChange();
+</script>
